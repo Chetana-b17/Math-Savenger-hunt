@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Math Scavenger Hunt</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="blob b1"></div>
+<div class="blob b2"></div>
+<div class="blob b3"></div>
+<div class="topbar">
+  <div class="tb-logo">🧮 MATH HUNT</div>
+  <div class="tb-r">
+    <div class="xpw"><span class="xpl" id="topLvl">LVL 1</span><div class="xpt"><div class="xpf" id="topXp" style="width:0%"></div></div></div>
+    <button class="ib" onclick="toggleTheme()" id="themeBtn">🌙</button>
+    <button class="ib" onclick="toggleSound()" id="soundBtn">🔊</button>
+  </div>
+</div>
+<div class="ts"><div class="tsf" id="tsf" style="width:100%"></div></div>
+<div class="toast" id="toast"></div>
+<div id="app">
+
+<!-- HOME -->
+<div id="homeScreen" class="screen active">
+  <div class="hero">
+    <span class="hero-icon">🧮</span>
+    <h1 class="hero-title">MATH SCAVENGER HUNT</h1>
+    <p class="hero-sub">Test Your Problem-Solving Skills</p>
+  </div>
+  <div class="pbar">
+    <div class="av" id="avEl">🦊</div>
+    <div class="pinfo">
+      <div class="pn">Math Explorer</div>
+      <div class="ps" id="pSub">XP: 0 | High Score: 0 | Games: 0</div>
+    </div>
+    <div class="lbadge" id="pLvl">LVL 1</div>
+  </div>
+  <div class="slabel">🎮 Select Game Mode</div>
+  <div class="mg">
+    <div class="mc active" data-mode="classic" onclick="pickMode(this)"><span class="mi">📚</span><div class="mn">CLASSIC</div><div class="md">10 questions, earn points and streaks.</div></div>
+    <div class="mc" data-mode="survival" onclick="pickMode(this)"><span class="mi">❤️</span><div class="mn">SURVIVAL</div><div class="md">3 lives only! How far can you go?</div></div>
+    <div class="mc" data-mode="speed" onclick="pickMode(this)"><span class="mi">⚡</span><div class="mn">SPEED ROUND</div><div class="md">Only 5 seconds per question!</div></div>
+    <div class="mc" data-mode="category" onclick="pickMode(this)"><span class="mi">🗂️</span><div class="mn">BY TOPIC</div><div class="md">Master one subject at a time.</div></div>
+  </div>
+  <div class="srow">
+    <div class="sbox">
+      <label>⚡ Difficulty</label>
+      <div class="bg2">
+        <button class="sb active" data-diff="easy" onclick="pickDiff(this)">🌱 Easy</button>
+        <button class="sb" data-diff="medium" onclick="pickDiff(this)">🔥 Med</button>
+        <button class="sb" data-diff="hard" onclick="pickDiff(this)">⚡ Hard</button>
+      </div>
+    </div>
+    <div class="sbox" id="avPicker">
+      <label>🎭 Avatar</label>
+      <div class="bg2" style="font-size:1.2rem;">
+        <button class="sb active" onclick="pickAv(this,'🦊')">🦊</button>
+        <button class="sb" onclick="pickAv(this,'🤖')">🤖</button>
+        <button class="sb" onclick="pickAv(this,'🦁')">🦁</button>
+        <button class="sb" onclick="pickAv(this,'🐉')">🐉</button>
+      </div>
+    </div>
+  </div>
+  <div class="lboard"><h3>🏆 Leaderboard</h3><div id="lbList"></div></div>
+  <button class="bplay" onclick="handlePlay()">▶ PLAY NOW</button>
+</div>
+
+<!-- CATEGORY -->
+<div id="catScreen" class="screen">
+  <div style="text-align:center;padding:78px 0 18px;width:100%;">
+    <h2 style="font-family:'Space Mono',monospace;font-size:1.4rem;color:var(--tl);">CHOOSE A TOPIC</h2>
+    <p style="color:var(--mu);margin-top:5px;">Master one subject at a time</p>
+  </div>
+  <div class="cg" id="catGrid"></div>
+  <button class="br sec" onclick="show('homeScreen')" style="margin-bottom:30px;">← BACK</button>
+</div>
+
+<!-- GAME -->
+<div id="gameScreen" class="screen">
+  <div class="gh">
+    <span class="mlab" id="mlEl">📚 CLASSIC</span>
+    <div class="srow2">
+      <div class="chip"><span class="cl">Score</span><span class="cv" id="scoreEl">0</span></div>
+      <div class="chip"><span class="cl">Streak</span><span class="cv" id="strkEl">🔥0</span></div>
+      <div class="chip" id="livChip" style="display:none"><span class="cl">Lives</span><div class="hr2" id="livEl"></div></div>
+      <div class="tr" id="tmrRing">
+        <svg width="50" height="50" viewBox="0 0 50 50">
+          <circle class="rtk" cx="25" cy="25" r="19" fill="none" stroke-width="4"/>
+          <circle class="rfill" id="rfEl" cx="25" cy="25" r="19" fill="none" stroke-width="4" stroke-dasharray="119.4" stroke-dashoffset="0"/>
+        </svg>
+        <div class="tnum" id="tmrNum">30</div>
+      </div>
+    </div>
+  </div>
+  <div class="pub">
+    <button class="pb" id="pu_freeze" onclick="usePU('freeze')"><span class="pbi">🧊</span><span>FREEZE</span><span class="pbc" id="c_freeze">×2</span></button>
+    <button class="pb" id="pu_5050" onclick="usePU('5050')"><span class="pbi">✂️</span><span>50/50</span><span class="pbc" id="c_5050">×2</span></button>
+    <button class="pb" id="pu_skip" onclick="usePU('skip')"><span class="pbi">⏭️</span><span>SKIP</span><span class="pbc" id="c_skip">×1</span></button>
+    <button class="pb" id="pu_double" onclick="usePU('double')"><span class="pbi">✨</span><span>2×PTS</span><span class="pbc" id="c_double">×1</span></button>
+  </div>
+  <div class="qprog">
+    <div class="qpl"><span class="qlft" id="qCnt">Q 1/10</span><span class="qrt" id="qLvl">LEVEL 1</span></div>
+    <div class="ptrack"><div class="pfill" id="pfEl" style="width:0%"></div></div>
+  </div>
+  <div class="qcard" id="qCard">
+    <div class="qmeta"><span class="bdg lv" id="lvBdg">L1</span><span class="bdg ct" id="ctBdg">MATH</span><span class="bdg mo" id="moBdg">CLASSIC</span></div>
+    <p class="qtxt" id="qText">...</p>
+    <p class="qhint" id="qHint"></p>
+  </div>
+  <div id="optsEl"></div>
+  <div class="expbox" id="expBox"><strong>💡 EXPLANATION</strong><span id="expTxt"></span></div>
+  <div class="fback" id="fbEl"><span id="fbIco"></span>&nbsp;<span id="fbTxt"></span></div>
+  <div class="qact">
+    <button class="bhint" id="hintBtn" onclick="doHint()">💡 Hint (−5 pts)</button>
+    <button class="bnext" id="nextBtn" onclick="nextQ()">NEXT →</button>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div id="resScreen" class="screen">
+  <div class="rw">
+    <div class="rgrade" id="resGrade">A</div>
+    <p class="rlabel" id="resLbl">Great Job!</p>
+    <div class="rstats">
+      <div class="rst"><span class="rv" id="rSc">0</span><span class="rl">Score</span></div>
+      <div class="rst"><span class="rv" id="rCo">0</span><span class="rl">Correct</span></div>
+      <div class="rst"><span class="rv" id="rSt">0</span><span class="rl">Best Streak</span></div>
+      <div class="rst"><span class="rv" id="rTm">0s</span><span class="rl">Avg Time</span></div>
+    </div>
+    <div class="xpearned">+<span id="xpAmt">0</span> XP Earned — Level progress updated!</div>
+    <div class="achiev"><h3>🏆 Achievements</h3><div class="achl" id="achList"></div></div>
+    <div class="revw"><h3>📋 Question Review</h3><div id="revList"></div></div>
+    <div class="rbtns">
+      <button class="br p" onclick="startGame()">▶ PLAY AGAIN</button>
+      <button class="br sec" onclick="show('homeScreen');renderLB()">⌂ HOME</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
